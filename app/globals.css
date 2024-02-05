@@ -1,7 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
+html,
+body,
+:root {
+  height: 100%;
+}
+html {
+  --cursor-color: #fff
+}
+
+html.dark-mode {
+  --cursor-color: #fff
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
