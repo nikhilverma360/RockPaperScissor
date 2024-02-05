@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
-import '@rainbow-me/rainbowkit/styles.css';
-import { Web3Providers } from '@/app/Web3Provider';
 
-const inter = Inter({ subsets: ["latin"] });
+import {Web3Modal} from "@/context/Web3Modal";
+
+const inter = Press_Start_2P({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}><Web3Providers>{children}</Web3Providers></body>
+      <body className={inter.className}>
+        <Web3Modal>
+          {children}
+        </Web3Modal>
+      </body>
     </html>
   );
 }
