@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Press_Start_2P } from "next/font/google";
+import { Black_Ops_One } from "next/font/google";
 import "./globals.css";
 
 import {Web3Modal} from "@/context/Web3Modal";
 
-const inter = Press_Start_2P({ weight: "400", subsets: ["latin"] });
+const inter = Black_Ops_One({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
