@@ -4,8 +4,9 @@ import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 
 import { WagmiConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'viem/chains'
+import React, { ReactNode } from 'react';
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+const projectId : string = process.env.NEXT_PUBLIC_PROJECT_ID !
 
 const metadata = {
   name: 'Web3Modal',
@@ -17,6 +18,10 @@ const metadata = {
 const chains = [mainnet, arbitrum]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
+interface Web3ModalProps {
+  children: ReactNode;
+}
+
 createWeb3Modal({
   wagmiConfig,
   projectId,
@@ -24,6 +29,6 @@ createWeb3Modal({
   enableAnalytics: true 
 })
 
-export function Web3Modal({ children }) {
+export function Web3Modal({ children } : Web3ModalProps) {
   return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
 }
