@@ -3,6 +3,7 @@ import { Black_Ops_One } from "next/font/google";
 import "./globals.css";
 
 import {Web3Modal} from "@/context/Web3Modal";
+import { Toaster } from "react-hot-toast";
 
 const inter = Black_Ops_One({ weight: "400", subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Web3Modal>
+        <Toaster/>
           {children}
         </Web3Modal>
       </body>
