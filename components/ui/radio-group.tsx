@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
-import { ArrowBigUpDash, Circle } from "lucide-react"
+import { CheckCircle2 } from "lucide-react"
 import Image from "next/image"
 
 
@@ -22,24 +22,27 @@ const RadioGroup = React.forwardRef<
 })
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
 
+interface RadioGroupItemProps extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+  src: string;
+}
+
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
+  RadioGroupItemProps
+>(({ className,src, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-         " bg-primary h-30 w-30 border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+         " bg-primary h-30 w-30 border border-primary rounded-3xl  shadow-2xl text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
       {...props}
     > 
-      <Image src={"/rock.png"} alt={""} width={100} height={100}/>
-      
+      <Image className="rounded-3xl" src={src} alt={""} width={100} height={100}/>
       
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-      <ArrowBigUpDash className="fill-amber-500"/>
+      <CheckCircle2 className="fill-amber-500"/>
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )
