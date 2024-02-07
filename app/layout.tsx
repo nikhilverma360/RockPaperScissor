@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Web3Modal>
-        <Toaster/>
+        <Toaster position="bottom-right"/>
           {children}
         </Web3Modal>
       </body>

@@ -1,9 +1,10 @@
-import useSound from "use-sound";
+//import useSound from "use-sound";
+// const useSound = require('use-sound');
 
-const useSoundPool = () => {
-  const [clickSound] = useSound("/click.mp3");
+// const useSoundPool = () => {
+//   const [clickSound] = useSound("/click.mp3");
 
-  return { clickSound  };
-};
+//   return { clickSound  };
+// };
 
-export default useSoundPool;
+// export default useSoundPool;

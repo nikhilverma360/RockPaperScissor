@@ -1,7 +1,6 @@
 "use client";
 import Dashboard from "./dashboard/dashboard";
 import { useAccount } from "wagmi";
-import AnimatedCursor from "react-animated-cursor";
 import Navbar from "@/components/navbar";
 
 
@@ -10,19 +9,6 @@ export default function Home() {
 
   return (
     <div className=" ">
-      <AnimatedCursor
-        innerSize={18}
-        outerSize={25}
-        innerScale={3}
-        outerScale={2}
-        outerAlpha={0}
-        innerStyle={{
-          backgroundColor: "var(--cursor-color)",
-        }}
-        outerStyle={{
-          border: "3px solid var(--cursor-color-outer)",
-        }}
-      />
       <Navbar/>
       <div
         style={{
