@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import useSoundPool from "@/hooks/useSoundPool";
+//import useSoundPool from "@/hooks/useSoundPool";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -43,11 +43,10 @@ const formSchema = z.object({
   move: z.enum(["1", "2", "3", "4", "5"], {
     required_error: "You need to select a your move.",
   }),
-  password: z.string().min(25),
 });
 
 export default function Dashboard() {
-  const { clickSound } = useSoundPool();
+  //const { clickSound } = useSoundPool();
   const { getMessageForSigning, signMessage } = useHasher();
   const { createGame } = useCreateGame();
   const [message, setMessage] = useState<string>("");
@@ -58,12 +57,11 @@ export default function Dashboard() {
     const newData = {
       gameAddress: "sfgagdsgad",
       move: "1",
-      salt: "36346346456753773773"
+      salt: "36346346456753773773",
     };
     addDataToLocalStorage(newData);
-    console.log("my data", data)
+    console.log("my data", data);
   };
-
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,14 +73,18 @@ export default function Dashboard() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    clickSound();
-    const signature = await signMessage(message);
-    createGame(
-      values.OpponentAddress as `0x${string}`,
-      values.BetAmount,
-      values.move as unknown as GameMove,
-      keccak256(signature!)
-    );
+    //clickSound();
+    const signature = await signMessage(message).then((sign)=>{
+      createGame(
+        values.OpponentAddress as `0x${string}`,
+        values.BetAmount,
+        values.move as unknown as GameMove,
+        keccak256(sign!)
+      );
+    }).catch((e)=>{
+      console.error(e)
+    });
+    console.log(signature);
     console.log(values);
   }
 
@@ -206,27 +208,23 @@ export default function Dashboard() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your Password Is </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="0.00"
-                            disabled={true}
-                            {...field}
-                            value={password}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Although, We use local storage of the browser to keep this secret. You can also save the password elsewhere! so that you can generate the signature in case of emergency!
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <FormItem>
+                    <FormLabel>Your Password Is </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="0.00"
+                        disabled={true}
+                        value={password}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Although, We use local storage of the browser to keep this
+                      secret. You can also save the password elsewhere! so that
+                      you can generate the signature in case of emergency!
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+
                   <Button type="submit">Create Game</Button>
                 </form>
               </Form>
