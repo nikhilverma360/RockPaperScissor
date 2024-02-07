@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,14 +9,90 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAccount } from "wagmi";
+import useSoundPool from "@/hooks/useSoundPool";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import useHasher from "@/hooks/useHasher";
+import useCreateGame from "@/hooks/useCreateGame";
+import { GameMove } from "@/types/types";
+import { isAddress, isAddressEqual, keccak256, parseEther } from "viem";
+import useLocalStorage from "@/hooks/useLocalStorage";
+
+const formSchema = z.object({
+  BetAmount: z
+    .string()
+    .regex(/^\d+$/)
+    .refine((value) => parseInt(value) >= 0, {
+      message: "Must be 0 and above",
+    }),
+  OpponentAddress: z.string().min(2).max(50),
+  move: z.enum(["1", "2", "3", "4", "5"], {
+    required_error: "You need to select a your move.",
+  }),
+  password: z.string().min(25),
+});
 
 export default function Dashboard() {
-  const { status } = useAccount();
+  const { clickSound } = useSoundPool();
+  const { getMessageForSigning, signMessage } = useHasher();
+  const { createGame } = useCreateGame();
+  const [message, setMessage] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { data, addDataToLocalStorage } = useLocalStorage();
+
+  const handleAddData = () => {
+    const newData = {
+      gameAddress: "sfgagdsgad",
+      move: "1",
+      salt: "36346346456753773773"
+    };
+    addDataToLocalStorage(newData);
+    console.log("my data", data)
+  };
+
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      OpponentAddress: "",
+      BetAmount: "0",
+      move: "1",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    clickSound();
+    const signature = await signMessage(message);
+    createGame(
+      values.OpponentAddress as `0x${string}`,
+      values.BetAmount,
+      values.move as unknown as GameMove,
+      keccak256(signature!)
+    );
+    console.log(values);
+  }
+
+  useEffect(() => {
+    const { message, password } = getMessageForSigning();
+    setMessage(message);
+    setPassword(password);
+    console.log("pass", password);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24">
       <Tabs defaultValue="account" className="w-[400px]">
@@ -30,44 +106,131 @@ export default function Dashboard() {
               <CardTitle>Create New Game</CardTitle>
               <CardDescription>
                 This game uses a commit-reveal scheme for player 1 to commit to
-                his move without revealing it. Make sure to save the password
+                his move without revealing it.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="address">Opponent Address</Label>
-                <Input id="address" placeholder="ftnikhil.eth" />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="bet">Bet Amount (in eth) </Label>
-                <Input id="bet" placeholder="0.00" type="number" min="0" />
-              </div>
-              <RadioGroup className="flex flex-row" defaultValue="option-one">
-                <div className="flex flex-col items-center space-x-2">
-                  <RadioGroupItem value="option-one" id="option-one" />
-                  <Label htmlFor="option-one">Rock</Label>
-                </div>
-                <div className="flex flex-col items-center space-x-2">
-                  <RadioGroupItem value="option-two" id="option-two" />
-                  <Label htmlFor="option-two">Paper</Label>
-                </div>
-                <div className="flex flex-col items-center space-x-2">
-                  <RadioGroupItem value="option-three" id="option-three" />
-                  <Label htmlFor="option-three">Scissors</Label>
-                </div>
-                <div className="flex flex-col items-center space-x-2">
-                  <RadioGroupItem value="option-four" id="option-four" />
-                  <Label htmlFor="option-four">Spock</Label>
-                </div>
-                <div className="flex flex-col items-center space-x-2">
-                  <RadioGroupItem value="option-five" id="option-five" />
-                  <Label htmlFor="option-five">Lizard</Label>
-                </div>
-              </RadioGroup>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
+                  <FormField
+                    control={form.control}
+                    name="OpponentAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Opponent Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="0xd914......39138" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="BetAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Bet Amount (in eth)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="0.00"
+                            type="number"
+                            min="0"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="move"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Choose Your Move</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="grid grid-cols-3  space-y-1"
+                          >
+                            <FormItem className="flex flex-col items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem src="/rock.png" value="1" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Rock
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex flex-col items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem src="/paper.png" value="2" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Paper
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex flex-col items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem src="/scissors.png" value="3" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Scissors
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex flex-col items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem src="/spock.png" value="4" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Spock
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex flex-col items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem src="/lizard.png" value="5" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Lizard
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Password Is </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="0.00"
+                            disabled={true}
+                            {...field}
+                            value={password}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Although, We use local storage of the browser to keep this secret. You can also save the password elsewhere! so that you can generate the signature in case of emergency!
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit">Create Game</Button>
+                </form>
+              </Form>
             </CardContent>
-            <CardFooter>
-              <Button>Create Game</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value="password">
@@ -82,7 +245,7 @@ export default function Dashboard() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button>Join</Button>
+              <Button onClick={handleAddData}>Join</Button>
             </CardFooter>
           </Card>
         </TabsContent>
