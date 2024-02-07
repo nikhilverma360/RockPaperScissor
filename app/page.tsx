@@ -2,11 +2,14 @@
 import Dashboard from "./dashboard/dashboard";
 import { useAccount } from "wagmi";
 import AnimatedCursor from "react-animated-cursor";
+import Navbar from "@/components/navbar";
+
 
 export default function Home() {
   const { status } = useAccount();
+
   return (
-    <div className="bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-black via-gray-800 to-black animate-text">
+    <div className=" ">
       <AnimatedCursor
         innerSize={18}
         outerSize={25}
@@ -17,9 +20,10 @@ export default function Home() {
           backgroundColor: "var(--cursor-color)",
         }}
         outerStyle={{
-          border: "3px solid var(--cursor-color)",
+          border: "3px solid var(--cursor-color-outer)",
         }}
       />
+      <Navbar/>
       <div
         style={{
           display: "flex",
@@ -27,7 +31,6 @@ export default function Home() {
           padding: 12,
         }}
       >
-        <w3m-button />
       </div>
       {/* <Dashboard/> */}
       {status === "connected" ? <Dashboard /> : <w3m-button />}
