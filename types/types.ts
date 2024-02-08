@@ -6,3 +6,8 @@ export enum GameMove {
     SPOCK,
     LIZARD,
   }
+
+export  type GameData = {
+    move: GameMove;
+    salt: `0x${string}`;
+  };
