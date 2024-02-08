@@ -31,6 +31,7 @@ import useCreateGame from "@/hooks/useCreateGame";
 import { GameMove } from "@/types/types";
 import { isAddress, isAddressEqual, keccak256, parseEther } from "viem";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import MyGames from "./MyGames";
 
 const formSchema = z.object({
   BetAmount: z
@@ -55,12 +56,14 @@ export default function Dashboard() {
 
   const handleAddData = () => {
     const newData = {
-      gameAddress: "sfgagdsgad",
-      move: "1",
-      salt: "36346346456753773773",
+      "0xddsdgsds6d87d" : {
+        gameAddress: "sfgagdsgad",
+        move: "1",
+        salt: "36346346456753773773",
+      }
+      
     };
-    addDataToLocalStorage(newData);
-    console.log("my data", data);
+    // addDataToLocalStorage(newData);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -88,6 +91,9 @@ export default function Dashboard() {
     console.log(values);
   }
 
+  useEffect(() =>{
+    console.log("data", JSON.stringify(data));
+  }, [data])
   useEffect(() => {
     const { message, password } = getMessageForSigning();
     setMessage(message);
@@ -248,6 +254,8 @@ export default function Dashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <MyGames data={data}/>
     </div>
   );
 }

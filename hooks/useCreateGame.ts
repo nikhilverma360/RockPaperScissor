@@ -6,10 +6,11 @@ import { abi , bytecode } from "@/contracts/rpsABI";
 import { toast } from "react-hot-toast";
 import useHasher from "@/hooks/useHasher";
 import { GameMove } from "@/types/types";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 const useCreateGame = () => {
   //const addGame = usePastGames((state) => state.addGame);
-
+  const { data, addDataToLocalStorage } = useLocalStorage();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { hashGameMessage } = useHasher();
@@ -48,7 +49,14 @@ const useCreateGame = () => {
 
       const deployedContract = await contractPromise;
 
-      //addGame(deployedContract, salt);
+      const addGame = {
+        [deployedContract] : {
+          move: move,
+          salt: salt,
+        }
+        
+      };
+      addDataToLocalStorage(addGame)
       return deployedContract;
     } catch (e) {
       console.error(e);
