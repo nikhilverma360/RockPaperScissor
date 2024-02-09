@@ -18,6 +18,24 @@ html.dark-mode {
   --cursor-color-outer: #ffffff91;
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  @apply overflow-hidden whitespace-nowrap;
+}
+
+.marquee-content {
+  @apply inline-block px-6 py-2;
+  animation: marquee 10s linear infinite;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
