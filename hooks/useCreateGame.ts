@@ -1,36 +1,30 @@
-//import usePastGames from "src/store/usePastGames";
+import useSavedGames from "@/hooks/useSavedGames";
 import { useWalletClient, usePublicClient } from "wagmi";
 import { parseEther } from "viem";
 import { abi , bytecode } from "@/contracts/rpsABI";
-//import RPS from "@/contracts/";
 import { toast } from "react-hot-toast";
 import useHasher from "@/hooks/useHasher";
 import { GameMove } from "@/types/types";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
 const useCreateGame = () => {
-  //const addGame = usePastGames((state) => state.addGame);
-  const { data, addDataToLocalStorage } = useLocalStorage();
+  const addGame = useSavedGames((state) => state.addGame);
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { hashGameMessage } = useHasher();
 
   const createGame = async (opponentAddress: `0x${string}`, wager: string, move: GameMove, salt: `0x${string}`) => {
     if (!walletClient) {
-      toast.error("Please connect your wallet first.");
+      toast.error("Wallet not connected. Please connect your wallet.");
       return "";
     }
 
     const commitment = hashGameMessage(move, salt);
 
-    console.log(commitment)
-
     try {
       const hash = await walletClient.deployContract({
         abi: abi,
         bytecode: bytecode as `0x${string}`,
-        // @ts-expect-error New functionality apparently, not yet added to types?
-        value: parseEther(wager).toString(),
+        value: BigInt(parseEther(wager).toString()),
         args: [commitment, opponentAddress],
         gas : BigInt(4700000)
       });
@@ -48,15 +42,8 @@ const useCreateGame = () => {
       });
 
       const deployedContract = await contractPromise;
+      addGame(deployedContract, move, salt);
 
-      const addGame = {
-        [deployedContract] : {
-          move: move,
-          salt: salt,
-        }
-        
-      };
-      addDataToLocalStorage(addGame)
       return deployedContract;
     } catch (e) {
       console.error(e);
