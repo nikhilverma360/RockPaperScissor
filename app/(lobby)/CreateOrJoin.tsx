@@ -29,9 +29,7 @@ import { z } from "zod";
 import useHasher from "@/hooks/useHasher";
 import useCreateGame from "@/hooks/useCreateGame";
 import { GameMove } from "@/types/types";
-import { isAddress, isAddressEqual, keccak256, parseEther } from "viem";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import MyGames from "./MyGames";
+import { keccak256 } from "viem";
 
 const formSchema = z.object({
   BetAmount: z
@@ -52,19 +50,6 @@ export default function Dashboard() {
   const { createGame } = useCreateGame();
   const [message, setMessage] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { data, addDataToLocalStorage } = useLocalStorage();
-
-  const handleAddData = () => {
-    const newData = {
-      "0xddsdgsds6d87d" : {
-        gameAddress: "sfgagdsgad",
-        move: "1",
-        salt: "36346346456753773773",
-      }
-      
-    };
-    // addDataToLocalStorage(newData);
-  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,23 +62,20 @@ export default function Dashboard() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     //clickSound();
-    const signature = await signMessage(message).then((sign)=>{
-      createGame(
-        values.OpponentAddress as `0x${string}`,
-        values.BetAmount,
-        values.move as unknown as GameMove,
-        keccak256(sign!)
-      );
-    }).catch((e)=>{
-      console.error(e)
-    });
-    console.log(signature);
-    console.log(values);
+    const signature = await signMessage(message)
+      .then((sign) => {
+        createGame(
+          values.OpponentAddress as `0x${string}`,
+          values.BetAmount,
+          values.move as unknown as GameMove,
+          keccak256(sign!)
+        );
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
-  useEffect(() =>{
-    console.log("data", JSON.stringify(data));
-  }, [data])
   useEffect(() => {
     const { message, password } = getMessageForSigning();
     setMessage(message);
@@ -102,7 +84,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="">
       <Tabs defaultValue="account" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Create</TabsTrigger>
@@ -249,13 +231,12 @@ export default function Dashboard() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleAddData}>Join</Button>
+              <Button>Join</Button>
             </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
 
-      <MyGames data={data}/>
     </div>
   );
 }
