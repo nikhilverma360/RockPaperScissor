@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { getImageUrl, copyToClipboard } from "@/lib/utils";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const MyGames = () => {
   const { games } = useStore();
@@ -22,11 +23,9 @@ const MyGames = () => {
   };
   console.log("games", games);
   return (
-    <div>
+    <div >
       <h2 className=" text-2xl my-4 text-white">My Games</h2>
-      <div
-        className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-2"
-      >
+      <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-2">
         {Object.entries(games)
           .reverse()
           .map(([key, value]) => (
@@ -58,7 +57,9 @@ const MyGames = () => {
                 >
                   Copy Link
                 </Button>
-                <Button>Join</Button>
+                <Button asChild>
+                  <Link href={`/play/${value.address}`}>Join</Link>
+                </Button>
               </CardFooter>
             </Card>
           ))}

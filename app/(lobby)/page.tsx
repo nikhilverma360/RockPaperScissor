@@ -10,14 +10,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: 12,
-        }}
-      ></div>
-      <div className="grid grid-cols-1 mx-2 md:mx-16 md:grid-cols-3">
+      <div className="grid grid-cols-1 mt-8 mx-2 md:mx-16 md:grid-cols-3">
         <div>{status === "connected" ? <Dashboard /> : <w3m-button />}</div>
         <div className="col-span-2">
           <MyGames />
