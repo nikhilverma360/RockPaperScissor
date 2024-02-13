@@ -12,7 +12,7 @@ const metadata = {
   name: "Web3Modal",
   description: "Web3Modal Example",
   url: "https://web3modal.com",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  icons: ["https://avatars.githubusercontent.com/u/37784889"],
 };
 
 const chains = [sepolia, arbitrumGoerli];
@@ -25,6 +25,7 @@ interface Web3ModalProps {
 createWeb3Modal({
   wagmiConfig,
   projectId,
+  defaultChain: sepolia,
   chains,
   enableAnalytics: true,
 });
