@@ -1,4 +1,3 @@
-import { GameMove } from "@/types/types";
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -38,4 +37,11 @@ export function copyToClipboard(address: string) {
     document.body.removeChild(el);
 }
 
-
+export function timeformat(s: any) {
+    return (
+      (s - (s %= 60)) / 60 +
+      (9 < s ? " minutes : " : " minutes : 0") +
+      s +
+      " seconds"
+    );
+  }
