@@ -10,12 +10,9 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-black border-yellow-400 border-2 rounded-3xl mx-8 mt-4">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-2">
-        <a
-          href=""
-          className="flex items-center space-x-3 rtl:space-x-reverse"
-        >
+        <a href="/" className="flex items-center ml-4 space-x-3 ">
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
-            Rock Paper Scissors .
+            RPS.
           </span>
         </a>
         <button
@@ -42,7 +39,10 @@ const Navbar: React.FC = () => {
             />
           </svg>
         </button>
-        <div className={`w-full md:block md:w-auto ${isMobileMenuOpen ? 'block' : 'hidden'}`} id="navbar-default">
+        <div
+          className={`w-full md:block md:w-auto ${isMobileMenuOpen ? "block" : "hidden"}`}
+          id="navbar-default"
+        >
           <w3m-button />
         </div>
       </div>
