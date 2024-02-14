@@ -6,13 +6,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Navbar from "@/components/navbar";
 import useGame from "@/hooks/useGames";
-import { P2Move } from "@/app/play/[address]/(ui)/P2Move";
 import { Wait } from "./(ui)/WaitOrTimeout";
 import { useAccount } from "wagmi";
 import { PlayerRole } from "@/types/types";
 import { Player2 } from "./(ui)/Player2";
 import { Player1 } from "./(ui)/Player1";
 import { GameOver } from "./(ui)/GameOver";
+import { formatEther } from "viem";
 
 const formSchema = z.object({
   move: z.enum(["1", "2", "3", "4", "5"], {
@@ -43,11 +43,16 @@ export default function Page({
         <div className="flex min-h-screen flex-col items-center justify-between p-4">
           <div>
             <div>
-              <Card className="flex flex-col items-center justify-betweeen mb-2">
-                <CardHeader>
-                  <CardTitle>The Bet Amount Is {String(stake)} ETH </CardTitle>
-                </CardHeader>
-              </Card>
+              {stake !== undefined && (
+                <Card className="flex flex-col items-center justify-betweeen mb-2">
+                  <CardHeader>
+                    <CardTitle>
+                      The Bet Amount Is {String(formatEther(stake!))} ETH{" "}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              )}
+
               {!!c2 && !stake ? (
                 <GameOver />
               ) : (
