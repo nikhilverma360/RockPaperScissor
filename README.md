@@ -1,6 +1,15 @@
 # Extended Rock Paper Scissors Web3 Game
 Welcome to the extended version of Rock Paper Scissors (RPS) implemented on the Ethereum blockchain using web3 technology. This game extends the traditional RPS game by adding additional weapons, following the guidelines provided by the Wikipedia article on RPS and incorporating them into the gameplay.
 
+<div>
+    <a href="https://www.loom.com/share/bb117d71702c4ec093914abb8ed878f1">
+      <p>RockPaperScissors - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/bb117d71702c4ec093914abb8ed878f1">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/bb117d71702c4ec093914abb8ed878f1-with-play.gif">
+    </a>
+</div>
+
 ## How to Play
 #### 1) Creating a Game:
 The first party creates the game by initiating a smart contract transaction. They will commit their move, select the other player, and stake some ETH.
