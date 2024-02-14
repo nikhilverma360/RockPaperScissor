@@ -29,16 +29,18 @@ import { z } from "zod";
 import useHasher from "@/hooks/useHasher";
 import useCreateGame from "@/hooks/useCreateGame";
 import { GameMove } from "@/types/types";
-import { keccak256 } from "viem";
+import { keccak256, isAddress } from "viem";
 
 const formSchema = z.object({
   BetAmount: z
     .string()
-    .regex(/^\d+$/)
+    .regex(/^(0|[1-9]\d*)\.?\d*$/)
     .refine((value) => parseInt(value) >= 0, {
       message: "Must be 0 and above",
     }),
-  OpponentAddress: z.string().min(2).max(50),
+  OpponentAddress: z
+    .string()
+    .refine((value) => isAddress(value), { message: "Invalid Address" }),
   move: z.enum(["1", "2", "3", "4", "5"], {
     required_error: "You need to select a your move.",
   }),
@@ -125,12 +127,7 @@ export default function Dashboard() {
                       <FormItem>
                         <FormLabel>Bet Amount (in eth)</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="0.00"
-                            type="number"
-                            min="0"
-                            {...field}
-                          />
+                          <Input placeholder="0.00" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -236,7 +233,6 @@ export default function Dashboard() {
           </Card>
         </TabsContent>
       </Tabs>
-
     </div>
   );
 }
