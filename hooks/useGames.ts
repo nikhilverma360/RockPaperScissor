@@ -62,6 +62,7 @@ const useGame = (address?: `0x${string}`) => {
   const writeP2TimeoutsP1 = async () => executeToastedTransaction(() => p2TimeoutsP1.writeAsync());
 
   const playerRole = useMemo(() => {
+    if (!j1 || !j2 || !userAddress) return PlayerRole.UNKNOWN;
     if (isAddressEqual(j1!, userAddress as `0x${string}`)) return PlayerRole.PLAYER1;
     else if (isAddressEqual(j2!, userAddress as `0x${string}`)) return PlayerRole.PLAYER2;
     else return PlayerRole.AUDIENCE;
