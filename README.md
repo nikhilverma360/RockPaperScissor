@@ -12,6 +12,15 @@ Welcome to the extended version of Rock Paper Scissors (RPS) implemented on the 
   </div>
 
 
+## Tech Used 
+
+- **Frontend development and UI:**  Nextjs, tailwindcss, schadcn
+- **Blockchain interaction:**  wagmi , web3modal , viem
+- **State management:** @tanstack/react-query , zustand
+- **Form handling:** react-hook-form, zod
+
+
+
   
 ## How to Play
 #### 1) Creating a Game:
